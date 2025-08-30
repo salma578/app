@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeChild Guard - Alerts</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 350px;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    #status {
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      background: #e1eafc;
+      color: #1d3557;
+    }
+    .alert {
+      background: #ff4d4d;
+      color: white;
+      font-weight: bold;
+    }
+    button {
+      background: #007bff;
+      border: none;
+      color: white;
+      padding: 12px 18px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SafeChild Guard</h1>
+    <div id="status">Waiting for alerts...</div>
+    <button onclick="simulateAlert()">Simulate Alert</button>
+  </div>
+
+  <script>
+    const statusBox = document.getElementById("status");
+
+    // Connect to backend via WebSocket
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "ALERT") {
+        triggerAlert();
+      }
+    };
+
+    function triggerAlert() {
+      statusBox.textContent = "🚨 Emergency Alert! Your child needs help!";
+      statusBox.classList.add("alert");
+      // Play alert sound
+      const audio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+      audio.play();
+      alert("🚨 Emergency Alert received!");
+    }
+
+    // Button for testing without device
+    function simulateAlert() {
+      triggerAlert();
+    }
+  </script>
+</body>
+</html>
